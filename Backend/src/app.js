@@ -1,8 +1,10 @@
 const express = require("express") ;
 const router = require("./routes/ai.routes");
-
-const app = express();
- app.get("/", (req, res) => {
+const cors = require("cors");
+const app = express()
+app.use(cors())
+app.use(express.json())
+app.get("/", (req, res) => {
   res.send("Hello, World!");
 });
 app.use("/api/ai", router);
