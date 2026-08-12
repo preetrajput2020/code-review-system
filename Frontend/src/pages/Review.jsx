@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { ArrowLeft, Play, Trash2 } from 'lucide-react'
 import ReviewPanel from '../components/ReviewPanel.jsx'
 
-const languages = ['JavaScript', 'Python', 'Java', 'C++', 'other']
+const explanationLanguages = ['English', 'Hinglish', 'Hindi']
 
 const sampleCode = `function getUser(id) {
   let user = null;
@@ -14,7 +14,7 @@ const sampleCode = `function getUser(id) {
 }`
 
 export default function Review() {
-  const [language, setLanguage] = useState('JavaScript')
+const [explanationLanguage, setExplanationLanguage] = useState('English')
   const [code, setCode] = useState('')
   const [status, setStatus] = useState('idle')
   const [review, setReview] = useState('')
@@ -35,9 +35,10 @@ export default function Review() {
     headers: {
       'Content-Type': 'application/json',
     },
-    body: JSON.stringify({
-      code,
-    }),
+  body: JSON.stringify({
+  code,
+  explanationLanguage,
+}),
   }
 )
 
@@ -95,18 +96,20 @@ export default function Review() {
               <h3 className="text-sm font-semibold text-ink">
                 Your Code
               </h3>
-
-              <select
-                value={language}
-                onChange={(e) => setLanguage(e.target.value)}
-                className="focus-ring rounded-md border border-line bg-white px-2.5 py-1.5 text-xs font-medium text-ink"
-              >
-                {languages.map((lang) => (
-                  <option key={lang} value={lang}>
-                    {lang}
-                  </option>
-                ))}
-              </select>
+                <p className="mt-1 text-xs text-subtle">
+    Choose how you want the AI to explain the review.
+  </p>
+           <select
+  value={explanationLanguage}
+  onChange={(e) => setExplanationLanguage(e.target.value)}
+  className="focus-ring rounded-md border border-line bg-white px-2.5 py-1.5 text-xs font-medium text-ink"
+>
+  {explanationLanguages.map((language) => (
+    <option key={language} value={language}>
+      {language}
+    </option>
+  ))}
+</select>
             </div>
 
             <textarea
