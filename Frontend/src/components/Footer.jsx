@@ -1,4 +1,4 @@
-import { Github, Linkedin, Code2 } from 'lucide-react'
+import { Github, Linkedin, Instagram, Code2 } from 'lucide-react'
 
 export default function Footer() {
   return (
@@ -11,28 +11,48 @@ export default function Footer() {
             </span>
             CodeReview<span className="text-accent">AI</span>
           </div>
+
           <p className="mt-2 max-w-xs text-sm text-subtle">
             AI-powered code reviews for better development.
           </p>
         </div>
 
         <div className="flex items-center gap-4">
+          {/* GitHub */}
           <a
-            href="#"
+            href="https://github.com/preetrajput2020"
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label="GitHub"
             className="focus-ring flex h-9 w-9 items-center justify-center rounded-lg border border-line text-subtle transition-colors hover:border-ink hover:text-ink"
           >
             <Github size={17} />
           </a>
+
+          {/* LinkedIn */}
           <a
-            href="#"
+            href="https://www.linkedin.com/in/preet--rajput"
+            target="_blank"
+            rel="noopener noreferrer"
             aria-label="LinkedIn"
             className="focus-ring flex h-9 w-9 items-center justify-center rounded-lg border border-line text-subtle transition-colors hover:border-ink hover:text-ink"
           >
             <Linkedin size={17} />
           </a>
+
+          {/* Instagram */}
+          <a
+            href="https://instagram.com/preet_rajputtt/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            className="focus-ring flex h-9 w-9 items-center justify-center rounded-lg border border-line text-subtle transition-colors hover:border-ink hover:text-ink"
+          >
+            <Instagram size={17} />
+          </a>
         </div>
       </div>
+
       <div className="border-t border-line py-4">
         <p className="container-x text-xs text-subtle">
           © {new Date().getFullYear()} CodeReview AI. Built as a personal project.
