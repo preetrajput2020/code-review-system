@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowLeft, Play, Trash2 } from 'lucide-react'
 import ReviewPanel from '../components/ReviewPanel.jsx'
-import mockReview from '../mock/mockReview.js'
 
 const languages = ['JavaScript', 'Python', 'Java', 'C++', 'other']
 
@@ -17,20 +16,50 @@ const sampleCode = `function getUser(id) {
 export default function Review() {
   const [language, setLanguage] = useState('JavaScript')
   const [code, setCode] = useState('')
-  const [status, setStatus] = useState('idle') // idle | loading | done
+  const [status, setStatus] = useState('idle')
+  const [review, setReview] = useState('')
+  const [error, setError] = useState('')
 
-  const handleReview = () => {
+  const handleReview = async () => {
     if (!code.trim()) return
+
     setStatus('loading')
-    // Mock delay to simulate an API call. Swap this for the real
-    // request to the review endpoint once the backend is ready.
-    setTimeout(() => {
+    setError('')
+    setReview('')
+
+    try {
+     const response = await fetch(
+  `${import.meta.env.VITE_API_URL}/api/ai/generate`,
+  {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify({
+      code,
+    }),
+  }
+)
+
+      const data = await response.text()
+
+      if (!response.ok) {
+        throw new Error(data || 'Failed to review code')
+      }
+
+      setReview(data)
       setStatus('done')
-    }, 1400)
+    } catch (error) {
+      console.error('Review Error:', error)
+      setError(error.message)
+      setStatus('error')
+    }
   }
 
   const handleClear = () => {
     setCode('')
+    setReview('')
+    setError('')
     setStatus('idle')
   }
 
@@ -39,9 +68,14 @@ export default function Review() {
       <header className="border-b border-line bg-paper">
         <div className="container-x flex h-16 items-center justify-between">
           <div>
-            <h1 className="text-base font-semibold text-ink sm:text-lg">AI Code Reviewer</h1>
-            <p className="text-xs text-subtle">Paste your code and get an AI-powered review.</p>
+            <h1 className="text-base font-semibold text-ink sm:text-lg">
+              AI Code Reviewer
+            </h1>
+            <p className="text-xs text-subtle">
+              Paste your code and get an AI-powered review.
+            </p>
           </div>
+
           <Link
             to="/"
             className="focus-ring flex items-center gap-1.5 rounded-lg border border-line px-3 py-2 text-sm text-subtle transition-colors hover:border-ink hover:text-ink"
@@ -54,10 +88,14 @@ export default function Review() {
 
       <main className="container-x flex-1 py-6 sm:py-8">
         <div className="grid gap-5 lg:grid-cols-2 lg:items-start">
+
           {/* Input panel */}
           <div className="flex flex-col overflow-hidden rounded-xl border border-line bg-white shadow-card">
             <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line px-5 py-4">
-              <h3 className="text-sm font-semibold text-ink">Your Code</h3>
+              <h3 className="text-sm font-semibold text-ink">
+                Your Code
+              </h3>
+
               <select
                 value={language}
                 onChange={(e) => setLanguage(e.target.value)}
@@ -86,6 +124,7 @@ export default function Review() {
               >
                 Use sample code
               </button>
+
               <div className="flex gap-2">
                 <button
                   onClick={handleClear}
@@ -94,13 +133,14 @@ export default function Review() {
                   <Trash2 size={14} />
                   Clear
                 </button>
+
                 <button
                   onClick={handleReview}
                   disabled={status === 'loading'}
                   className="focus-ring flex items-center gap-1.5 rounded-lg bg-ink px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-accent-dark disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <Play size={14} />
-                  Review Code
+                  {status === 'loading' ? 'Reviewing...' : 'Review Code'}
                 </button>
               </div>
             </div>
@@ -108,8 +148,13 @@ export default function Review() {
 
           {/* Output panel */}
           <div className="h-[30rem] lg:h-[38.5rem]">
-            <ReviewPanel status={status} review={mockReview} />
+            <ReviewPanel
+              status={status}
+              review={review}
+              error={error}
+            />
           </div>
+
         </div>
       </main>
     </div>
